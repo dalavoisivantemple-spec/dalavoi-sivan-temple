@@ -1,0 +1,235 @@
+/* Dalavoi Sivan Temple — static site styles.
+   Palette comes from the temple itself: granite sculpture, the blue-washed walls,
+   ghee-lamp gold, and kumkum red (used only for the donation panel). */
+
+/* ---------- Fonts (self-hosted, Tamil + Latin). Tamil faces are declared last so they win for shared code points. ---------- */
+@font-face{font-family:"Noto Sans Tamil";font-style:normal;font-weight:400;font-display:swap;src:url(../fonts/noto-sans-tamil-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Noto Sans Tamil";font-style:normal;font-weight:700;font-display:swap;src:url(../fonts/noto-sans-tamil-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Noto Serif Tamil";font-style:normal;font-weight:700;font-display:swap;src:url(../fonts/noto-serif-tamil-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Noto Sans Tamil";font-style:normal;font-weight:400;font-display:swap;src:url(../fonts/noto-sans-tamil-tamil-400-normal.woff2) format("woff2");unicode-range:U+0964-0965,U+0B82-0BFA,U+200C-200D,U+25CC}
+@font-face{font-family:"Noto Sans Tamil";font-style:normal;font-weight:700;font-display:swap;src:url(../fonts/noto-sans-tamil-tamil-700-normal.woff2) format("woff2");unicode-range:U+0964-0965,U+0B82-0BFA,U+200C-200D,U+25CC}
+@font-face{font-family:"Noto Serif Tamil";font-style:normal;font-weight:700;font-display:swap;src:url(../fonts/noto-serif-tamil-tamil-700-normal.woff2) format("woff2");unicode-range:U+0964-0965,U+0B82-0BFA,U+200C-200D,U+25CC}
+
+/* ---------- Tokens ---------- */
+:root{
+  --granite:#14171f;      /* black granite of the sculptures */
+  --granite-2:#1f2433;
+  --indigo:#2b3a8c;       /* the blue-washed shrine walls */
+  --indigo-deep:#1b2563;
+  --wash:#e3e8f7;         /* pale wall wash */
+  --paper:#f7f8fc;
+  --gold:#f2b53e;         /* ghee lamp flame */
+  --gold-soft:#ffd98a;
+  --kumkum:#a8231f;       /* donation panel only */
+  --ink:#1a1f2e;
+  --muted:#4a5168;
+  --on-dark-muted:#c3cbe6;
+  --serif:"Noto Serif Tamil","Noto Serif",Georgia,serif;
+  --sans:"Noto Sans Tamil","Noto Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+/* ---------- Language switch: both languages live in the HTML, one is shown ---------- */
+html[data-lang="ta"] .en{display:none !important}
+html[data-lang="en"] .ta{display:none !important}
+
+/* ---------- Base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);font-size:1.0625rem;line-height:1.8;color:var(--ink);background:var(--paper)}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--indigo)}
+h1,h2,h3{font-family:var(--serif);font-weight:700;line-height:1.35;margin:0 0 .6em}
+h2{font-size:clamp(1.6rem,4.2vw,2.35rem)}
+h3{font-size:1.25rem}
+p{margin:0 0 1em}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.sec-light :focus-visible,.sec-wash :focus-visible{outline-color:var(--indigo)}
+.skip{position:absolute;left:-999px;top:0;background:var(--gold);color:var(--granite);padding:.6rem 1rem;z-index:100}
+.skip:focus{left:0}
+.wrap{width:min(1120px,100% - 2.5rem);margin-inline:auto}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-block;padding:.75rem 1.3rem;border-radius:6px;font:700 1rem/1.4 var(--sans);text-decoration:none;border:2px solid transparent;cursor:pointer;text-align:center}
+.btn-sm{padding:.45rem .9rem;font-size:.95rem}
+.btn-gold{background:var(--gold);color:var(--granite)}
+.btn-gold:hover{background:var(--gold-soft)}
+.btn-line{background:transparent;color:inherit;border-color:currentColor}
+.btn-line:hover{background:rgba(255,255,255,.1)}
+.btn-ink{background:var(--indigo-deep);color:#fff}
+.btn-ink:hover{background:var(--indigo)}
+.btn-line-ink{background:transparent;color:var(--indigo-deep);border-color:var(--indigo-deep)}
+.btn-line-ink:hover{background:rgba(27,37,99,.08)}
+.btn-copy{background:var(--indigo-deep);color:#fff;margin-left:.5rem}
+
+/* ---------- Header ---------- */
+.site-header{position:sticky;top:0;z-index:50;background:var(--granite);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.bar{display:flex;align-items:center;gap:1rem;min-height:60px;padding-block:.35rem}
+.brand{font:700 1.05rem/1.3 var(--serif);color:#fff;text-decoration:none;margin-right:auto}
+.nav{display:none}
+.nav a{color:var(--on-dark-muted);text-decoration:none;font-size:.97rem;padding:.4rem .2rem}
+.nav a:hover{color:#fff}
+.bar-end{display:flex;align-items:center;gap:.6rem}
+.lang{display:flex;border:1px solid rgba(255,255,255,.35);border-radius:6px;overflow:hidden}
+.lang button{font:700 .9rem/1.2 var(--sans);padding:.45rem .7rem;background:transparent;color:#fff;border:0;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--gold);color:var(--granite)}
+@media (min-width:900px){
+  .nav{display:flex;gap:1.4rem;margin-right:1rem}
+  .brand{margin-right:1.5rem}
+  .bar{gap:1.2rem}
+  .nav{margin-left:auto}
+  .brand{margin-right:0}
+}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;background:var(--granite);color:#fff;overflow:hidden}
+.hero-photo{position:relative;height:min(58vh,500px)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(20,23,31,.15) 0%,rgba(20,23,31,.6) 58%,var(--granite) 100%)}
+.hero-copy{position:relative;margin-top:-6.5rem;padding-bottom:3rem}
+.hero h1{font-size:clamp(1.35rem,5.9vw,3.2rem);margin-bottom:.25em;text-wrap:balance;line-height:1.25}
+.place{color:var(--gold-soft);font-weight:700;margin-bottom:.9rem}
+.lede{font-size:1.15rem;max-width:34em;color:#e8ecfa;margin-bottom:1.2rem}
+.status{display:inline-flex;align-items:center;gap:.6rem;margin:0 0 1.4rem;padding:.4rem .9rem;border:1px solid rgba(255,255,255,.3);border-radius:999px;font-size:.97rem;line-height:1.5;min-height:2.4rem}
+.status:empty{display:none}
+.status::before{content:"";flex:none;width:.7rem;height:.7rem;border-radius:50%;border:2px solid var(--gold)}
+.status[data-state="open"]::before{background:var(--gold)}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.6rem}
+.formal{font-size:.9rem;color:var(--on-dark-muted);margin:0;max-width:40em}
+@media (min-width:900px){
+  .hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);min-height:min(78vh,700px)}
+  .hero-photo{order:2;height:auto}
+  .hero-photo::after{background:linear-gradient(to right,var(--granite) 0%,rgba(20,23,31,.35) 35%,rgba(20,23,31,0) 70%)}
+  .hero-copy{order:1;margin:0;width:auto;align-self:center;position:relative;z-index:2;padding:4rem 2rem 4rem max(1.25rem,calc((100vw - 1120px)/2))}
+  .hero h1{font-size:clamp(1.8rem,3.1vw,2.5rem)}
+}
+
+/* ---------- Sections ---------- */
+.sec{padding-block:clamp(3rem,8vw,5.5rem)}
+.sec-light{background:var(--paper)}
+.sec-wash{background:var(--wash)}
+.sec-dark{background:var(--granite);color:#fff}
+.sec-indigo{background:var(--indigo-deep);color:#fff}
+.sec-indigo a{color:var(--gold-soft)}
+.prose{max-width:38rem}
+.prose-wide{max-width:44rem}
+.split{display:grid;gap:2rem;align-items:start}
+@media (min-width:860px){
+  .split{grid-template-columns:minmax(260px,340px) 1fr;gap:3.5rem}
+  .split-about{grid-template-columns:1fr minmax(300px,420px)}
+  .split-visit{grid-template-columns:1fr 1fr}
+}
+
+/* Thursday */
+.portrait{margin:0;max-width:340px}
+.portrait img{border-radius:4px;outline:1px solid rgba(0,0,0,.08)}
+.hours-note{margin-top:1.4rem;padding-left:1rem;border-left:4px solid var(--gold)}
+
+/* 16-week deepam */
+.intents{list-style:none;padding:0;margin:1.2rem 0 1.4rem;display:grid;gap:.5rem}
+.intents li{padding-left:1rem;border-left:3px solid var(--gold)}
+.tel{font-weight:700;white-space:nowrap}
+.tracker{margin-top:2.5rem;padding:1.5rem 1.25rem;background:var(--indigo);border-radius:10px;max-width:52rem}
+.tracker h3{margin-bottom:.2em}
+.tracker-help{color:var(--on-dark-muted);margin-bottom:0}
+.lamps{list-style:none;margin:1.2rem 0 .6rem;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+@media (min-width:640px){.lamps{grid-template-columns:repeat(8,1fr)}}
+.lamp{display:grid;justify-items:center;gap:.15rem;width:100%;min-height:44px;padding:.35rem 0;background:transparent;border:0;color:var(--on-dark-muted);cursor:pointer;font:700 .9rem/1 var(--sans)}
+.lamp svg{width:46px;height:58px;overflow:visible}
+.lamp .bowl{fill:none;stroke:rgba(255,255,255,.55);stroke-width:2.5;stroke-linejoin:round}
+.lamp .wick{stroke:rgba(255,255,255,.55);stroke-width:2.5;stroke-linecap:round;fill:none}
+.lamp .flame{fill:var(--gold);opacity:0;transform-origin:32px 42px}
+.lamp[aria-pressed="true"]{color:#fff}
+.lamp[aria-pressed="true"] .bowl{fill:#b9791f;stroke:var(--gold)}
+.lamp[aria-pressed="true"] .wick{stroke:#fff}
+.lamp[aria-pressed="true"] .flame{opacity:1;animation:flicker 2.6s ease-in-out infinite}
+.lamp[aria-pressed="true"] svg{filter:drop-shadow(0 0 8px rgba(242,181,62,.75))}
+.lamps li:nth-child(3n+1) .lamp[aria-pressed="true"] .flame{animation-delay:-.7s}
+.lamps li:nth-child(3n+2) .lamp[aria-pressed="true"] .flame{animation-delay:-1.5s}
+@keyframes flicker{0%,100%{transform:scale(1,1)}35%{transform:scale(.94,1.07)}70%{transform:scale(1.04,.96)}}
+.tracker-count{font:700 1.15rem/1.5 var(--serif);margin:.4rem 0 1rem}
+.tracker-foot{display:flex;flex-wrap:wrap;align-items:center;gap:1rem}
+.tracker-foot .note{margin:0;font-size:.9rem;color:var(--on-dark-muted)}
+
+/* About */
+.facts{margin:0;display:grid;gap:0}
+.facts div{padding:.9rem 0;border-top:1px solid rgba(26,31,46,.15)}
+.facts div:last-child{border-bottom:1px solid rgba(26,31,46,.15)}
+.facts dt{font-weight:700;color:var(--indigo-deep);font-size:.95rem}
+.facts dd{margin:0}
+
+/* Thirupani + donation */
+.progress{margin:2rem 0;max-width:44rem}
+.progress p{margin:0 0 .5rem;font-weight:700}
+.progress .track{height:14px;border-radius:7px;background:rgba(43,58,140,.2);overflow:hidden}
+.progress .fill{height:100%;background:var(--indigo);border-radius:7px}
+.give{display:grid;gap:2rem;margin-top:2.2rem}
+@media (min-width:860px){.give{grid-template-columns:1.5fr 1fr;gap:3rem;align-items:start}}
+.give-main{background:#fff;border-top:5px solid var(--kumkum);padding:1.5rem 1.4rem}
+.give-main h3,.give-side h3{margin-bottom:.4em}
+.upi{font:700 1.35rem/1.4 var(--sans);word-break:break-all;margin:.2rem 0 1rem}
+.qr{width:200px;height:200px;border:1px solid rgba(0,0,0,.15);margin:.5rem 0 1rem}
+.bank{margin:1rem 0 0;display:grid;grid-template-columns:auto 1fr;gap:.35rem 1rem}
+.bank dt{font-weight:700;color:var(--indigo-deep)}
+.bank dd{margin:0;word-break:break-word}
+.trust-line{margin:2rem 0 0;color:var(--muted)}
+
+/* News */
+.news{max-width:44rem}
+.news-item{padding:1.4rem 0;border-top:1px solid rgba(26,31,46,.15)}
+.news-item time{display:block;color:var(--muted);font-size:.92rem}
+.news-item h3{margin:.2em 0 .4em}
+.news-item img{max-width:min(100%,420px);margin-top:.8rem;border-radius:4px}
+.empty{color:var(--muted)}
+
+/* Gallery */
+.on-dark h2{color:#fff}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1.5rem}
+@media (min-width:900px){.gallery{grid-template-columns:repeat(4,1fr)}}
+.gallery figure{margin:0}
+.gallery button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:4px;overflow:hidden}
+.gallery img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.gallery figcaption{margin-top:.5rem;font-size:.92rem;line-height:1.5;color:var(--on-dark-muted)}
+
+/* Visit */
+address{font-style:normal;margin-bottom:1.4rem}
+.hours h3{margin-bottom:.6rem}
+.hours table{width:100%;border-collapse:collapse}
+.hours th,.hours td{padding:.8rem .6rem;text-align:left;vertical-align:top;border-bottom:1px solid rgba(26,31,46,.18)}
+.hours th{font-weight:400;width:48%}
+.hours .is-thursday th,.hours .is-thursday td{font-weight:700;background:#fff4d6}
+.hours .is-thursday th{border-left:4px solid var(--gold)}
+
+/* Footer */
+.site-footer{background:var(--granite);color:var(--on-dark-muted);padding-block:2.5rem;font-size:.95rem}
+.site-footer p{margin:0 0 .6rem}
+.foot-name{color:#fff;font-weight:700}
+.foot-small{font-size:.85rem}
+
+/* Lightbox */
+dialog#lightbox{padding:0;border:0;background:transparent;max-width:min(92vw,820px);max-height:92vh;overflow:visible}
+dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
+#lightbox img{max-height:88vh;width:auto;margin:auto;border-radius:4px}
+.lb-close{position:absolute;top:-2.6rem;right:0;width:2.4rem;height:2.4rem;font-size:1.6rem;line-height:1;border-radius:50%;border:0;background:var(--gold);color:var(--granite);cursor:pointer}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .lamp[aria-pressed="true"] .flame{animation:none}
+}
+
+@media (max-width:520px){
+  .bar{gap:.5rem}
+  .brand{font-size:.95rem}
+  .bar-end{gap:.4rem}
+  .lang button{padding:.4rem .5rem;font-size:.82rem}
+  .bar-end .btn{padding:.45rem .7rem;font-size:.85rem;min-height:0}
+}
+
+/* ---------- History / inscriptions ---------- */
+.records{list-style:none;margin:2rem 0 0;padding:0;display:grid;gap:1.1rem;max-width:52rem}
+.rec{background:#fff;border-left:4px solid var(--indigo);border-radius:0 6px 6px 0;padding:1.1rem 1.3rem}
+.rec h3{margin:0 0 .15rem;font-size:1.25rem;color:var(--indigo-deep)}
+.rec p{margin:.35rem 0 0}
+.rec-where{font-weight:700;color:var(--muted)}
+.rec-here{border-left-color:var(--kumkum);box-shadow:0 1px 0 rgba(26,31,46,.12)}
+.rec-tag{display:inline-block;margin:.2rem 0 0;padding:.1rem .6rem;background:var(--kumkum);color:#fff;border-radius:99px;font-size:.85rem;font-weight:700}
+.note{max-width:52rem;margin-top:1.4rem;font-size:.95rem;color:var(--muted)}
