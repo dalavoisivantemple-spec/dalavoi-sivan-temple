@@ -265,7 +265,16 @@
       cb.addEventListener('click', function () { copyText(d.upi_id, cb); });
       u.appendChild(document.createTextNode(' ')); u.appendChild(cb);
       if (d.upi_qr) {
-        var q = el('img', 'qr'); q.src = d.upi_qr; q.alt = 'UPI QR code'; q.width = 200; q.height = 200; box.appendChild(q);
+        var qh = el('p', 'qr-head'); bi(qh, 'Scan to contribute', 'பங்களிக்க ஸ்கேன் செய்யுங்கள்'); box.appendChild(qh);
+        var q = el('img', 'qr'); q.src = d.upi_qr; q.alt = 'UPI QR code to contribute to ' + (d.account_name || 'the temple trust'); q.width = 200; q.height = 200; box.appendChild(q);
+      }
+      var pay = el('a', 'btn btn-gold btn-sm upi-pay');
+      pay.href = 'upi://pay?pa=' + encodeURIComponent(d.upi_id) + '&pn=' + encodeURIComponent(d.account_name || '') + '&cu=INR';
+      bi(pay, 'Pay with UPI app', 'UPI செயலியில் செலுத்த');
+      box.appendChild(pay);
+      if (d.account_name) {
+        var pn = el('p', 'payee'); bi(pn, 'Payee name: ' + d.account_name + '. Please check this name in your app before paying.',
+          'பெறுநர் பெயர்: ' + d.account_name + '. செலுத்துவதற்கு முன் உங்கள் செயலியில் இந்தப் பெயரைச் சரிபார்க்கவும்.'); box.appendChild(pn);
       }
     }
     if (d.account_number) {
@@ -284,7 +293,7 @@
       box.appendChild(dl);
     }
     var call = el('p'); call.style.marginTop = '1rem';
-    bi(call, 'Questions? Call the temple: ', 'சந்தேகங்களுக்கு கோயிலை அழைக்கவும்: ');
+    bi(call, 'For other ways to contribute, call the temple: ', 'வேறு வழிகளில் பங்களிக்க கோயிலை அழைக்கவும்: ');
     var tel = el('a', 'tel', '+91 89038 89272'); tel.href = 'tel:+918903889272';
     call.appendChild(tel); box.appendChild(call);
   }

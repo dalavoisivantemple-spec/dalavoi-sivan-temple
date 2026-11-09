@@ -167,7 +167,7 @@ p{margin:0 0 1em}
 .give-main{background:#fff;border-top:5px solid var(--kumkum);padding:1.5rem 1.4rem}
 .give-main h3,.give-side h3{margin-bottom:.4em}
 .upi{font:700 1.35rem/1.4 var(--sans);word-break:break-all;margin:.2rem 0 1rem}
-.qr{width:200px;height:200px;border:1px solid rgba(0,0,0,.15);margin:.5rem 0 1rem}
+.qr{display:block;width:200px;height:200px;border:1px solid rgba(0,0,0,.15);margin:.5rem 0 1rem}
 .bank{margin:1rem 0 0;display:grid;grid-template-columns:auto 1fr;gap:.35rem 1rem}
 .bank dt{font-weight:700;color:var(--indigo-deep)}
 .bank dd{margin:0;word-break:break-word}
@@ -296,3 +296,8 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
 .cal-note{margin:.9rem 0 0;font-size:.85rem;color:var(--muted)}
 @media (max-width:900px){.cal{grid-template-columns:1fr}}
 @media (max-width:520px){.cal-day,.cal-month{padding:.8rem}.cal-cell{min-height:3.6rem;padding:.2rem}.cal-cell .f{display:none}.cal-cell.fest .g::after{content:" •";color:var(--kumkum)}}
+.qr-head{font-weight:700;margin:.8rem 0 0}
+.upi-pay{display:none;margin:0 0 .8rem}
+@media (hover:none) and (pointer:coarse){.upi-pay{display:inline-block}}
+.payee{font-size:.95rem;color:var(--muted);margin:.4rem 0 0}
+.qr{background:#fff}

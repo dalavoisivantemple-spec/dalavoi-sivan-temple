@@ -15,9 +15,9 @@ window.TEMPLE_CONFIG = {
 
   // Fill these in only after the Trust confirms them.
   donation: {
-    upi_id: "",             // e.g. "name@bank"
-    upi_qr: "",             // path to a QR image, e.g. "assets/img/upi-qr.png"
-    account_name: "",       // must be the Trust's registered name
+    upi_id: "9786012999m@pnb",
+    upi_qr: "assets/img/upi-qr.svg",
+    account_name: "Sri Dhatchinamoorthi Arakattalai",       // must be the Trust's registered name
     account_number: "",
     ifsc: "",
     bank: "",               // bank and branch
