@@ -285,7 +285,7 @@
     }
     var call = el('p'); call.style.marginTop = '1rem';
     bi(call, 'Questions? Call the temple: ', 'சந்தேகங்களுக்கு கோயிலை அழைக்கவும்: ');
-    var tel = el('a', 'tel', '+91 89032 89272'); tel.href = 'tel:+918903889272';
+    var tel = el('a', 'tel', '+91 89038 89272'); tel.href = 'tel:+918903889272';
     call.appendChild(tel); box.appendChild(call);
   }
   function renderProgress() {
