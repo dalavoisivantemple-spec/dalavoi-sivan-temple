@@ -237,3 +237,17 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
 .foot-social{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin:1rem 0}
 .foot-social a{color:var(--gold-soft);font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .foot-follow{color:var(--on-dark-muted)}
+
+/* ---------- Bus directions ---------- */
+.bus{margin-top:2rem;padding-top:1.4rem;border-top:1px solid rgba(26,31,46,.15)}
+.bus h3{margin:0 0 .5rem;font-size:1.2rem;color:var(--indigo-deep)}
+.bus p{margin:.5rem 0}
+.bus-note{font-weight:700}
+
+/* ---------- Header: keep menu items on one line ---------- */
+.brand,.nav a{white-space:nowrap}
+@media (min-width:900px) and (max-width:1199px){
+  .nav{gap:.9rem}
+  .nav a{font-size:.9rem}
+}
+@media (max-width:899px){ .brand{white-space:normal} }
