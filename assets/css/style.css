@@ -251,3 +251,13 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
   .nav a{font-size:.9rem}
 }
 @media (max-width:899px){ .brand{white-space:normal} }
+@media (min-width:900px) and (max-width:1239px){
+  .nav{display:none}
+}
+@media (min-width:1240px){
+  .site-header .wrap{width:min(1280px,100% - 2.5rem)}
+  .nav{gap:.55rem;margin-right:.2rem}
+  .nav a{font-size:.85rem;padding-inline:.1rem}
+  .brand{font-size:.92rem}
+  .bar{gap:.6rem}
+}
