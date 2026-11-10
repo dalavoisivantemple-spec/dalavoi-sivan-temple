@@ -6,6 +6,7 @@
   var N = P.N;
   var DOW_TA = ['ஞாயிறு', 'திங்கள்', 'செவ்வாய்', 'புதன்', 'வியாழன்', 'வெள்ளி', 'சனி'];
   var DOW_FULL_TA = ['ஞாயிற்றுக்கிழமை', 'திங்கட்கிழமை', 'செவ்வாய்க்கிழமை', 'புதன்கிழமை', 'வியாழக்கிழமை', 'வெள்ளிக்கிழமை', 'சனிக்கிழமை'];
+  var DOW_TA_SHORT = ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச'];
   var DOW_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   var MON_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   var MON_TA = ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்', 'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'];
@@ -96,7 +97,9 @@
     title.appendChild(s);
     nav.appendChild(prev); nav.appendChild(title); nav.appendChild(next);
 
-    for (var w = 0; w < 7; w++) { var c = el('div', 'cal-dow' + (w === 4 ? ' thu' : '')); bi(c, DOW_TA[w], DOW_EN[w]); grid.appendChild(c); }
+    for (var w = 0; w < 7; w++) { var c = el('div', 'cal-dow' + (w === 4 ? ' thu' : '')), ct = el('span', 'ta'); ct.setAttribute('lang', 'ta');
+      ct.appendChild(el('span', 'dfull', DOW_TA[w])); ct.appendChild(el('span', 'dshort', DOW_TA_SHORT[w]));
+      var ce = el('span', 'en', DOW_EN[w]); ce.setAttribute('lang', 'en'); c.appendChild(ct); c.appendChild(ce); grid.appendChild(c); }
     var first = new Date(Date.UTC(view.y, view.m - 1, 1)).getUTCDay(), last = new Date(Date.UTC(view.y, view.m, 0)).getUTCDate();
     for (var b = 0; b < first; b++) grid.appendChild(el('div', 'cal-cell empty'));
     for (var d = 1; d <= last; d++) {
@@ -110,7 +113,8 @@
         cell.appendChild(el('span', 'g', d));
         var t = el('span', 'tm');
         var showMonth = d === 1 || i.tamil.day === 1;
-        bi(t, showMonth ? N.monthTa[i.tamil.month] + ' ' + i.tamil.day : String(i.tamil.day), showMonth ? N.monthEn[i.tamil.month].slice(0, 3) + ' ' + i.tamil.day : String(i.tamil.day));
+        if (showMonth) { var mn = el('span', 'mn'); bi(mn, N.monthTa[i.tamil.month], N.monthEn[i.tamil.month].slice(0, 3)); t.appendChild(mn); }
+        t.appendChild(el('span', 'dn', String(i.tamil.day)));
         cell.appendChild(t);
         var tag = ev.filter(function (e) { return e.kind === 'major'; })[0] || ev.filter(function (e) { return e.kind !== 'guru' && e.kind !== 'month'; })[0];
         if (tag) { var f = el('span', 'f'); bi(f, tag.ta, tag.en); cell.appendChild(f); }

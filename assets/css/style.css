@@ -312,3 +312,16 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
 .cal-cat input,.cal-yr input{width:1.2rem;height:1.2rem;flex:none;margin-top:.15rem;accent-color:var(--indigo-deep)}
 .cal-link{background:none;border:0;padding:.3rem 0;color:var(--indigo);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
 .cal-dlg .btn[disabled]{opacity:.5;cursor:not-allowed}
+.cal-dow .dshort{display:none}
+.cal-cell .tm .mn{display:block;font-weight:700}
+.cal-cell .tm .dn{display:block}
+@media (max-width:520px){
+  .cal-dow .dfull{display:none}.cal-dow .dshort{display:inline}
+  .cal-dow{font-size:.8rem}
+  .cal-cell .tm{font-size:.62rem}
+  .cal-cell .tm .mn{font-size:.6rem;overflow:hidden;text-overflow:clip;white-space:nowrap}
+}
+@media (max-width:520px){
+  .cd-list{grid-template-columns:1fr;gap:.1rem}
+  .cd-list dd{margin-bottom:.55rem}
+}
