@@ -220,6 +220,7 @@
     eveRule(18, 'சங்கடஹர சதுர்த்தி', 'Sankatahara Chaturthi', 'sankatahara');
     pickRuns(function (x) { return x.nakNoon === 2; }, null, function (x) { put(x, 'கார்த்திகை (முருகன் வழிபாடு)', 'Karthigai star (Murugan worship)', 'tithi', 'karthigai'); });
     everyDay(function (x) { if (x.tamil.day === 1) put(x, N.monthTa[x.tamil.month] + ' மாதப் பிறப்பு', N.monthEn[x.tamil.month] + ' month begins', 'month', 'month1'); });
+    everyDay(function (x) { if (x.dow === 5 && x.tamil.day <= 7) put(x, N.monthTa[x.tamil.month] + ' மாத முதல் வெள்ளிக்கிழமை', '1st Friday of ' + N.monthEn[x.tamil.month], 'tithi', 'friday1'); });
 
     // --- fixed by Tamil date ---
     function tamilRule(mo, dy, ta, en) {

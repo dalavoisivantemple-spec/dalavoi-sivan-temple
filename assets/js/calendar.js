@@ -137,6 +137,7 @@
     ['sankatahara', 'சங்கடஹர சதுர்த்தி', 'Sankatahara Chaturthi', false],
     ['sashti', 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', false],
     ['month1', 'தமிழ் மாதப் பிறப்பு (மாதத்தின் முதல் நாள்)', '1st day of each Tamil month', false],
+    ['friday1', 'தமிழ் மாதத்தின் முதல் வெள்ளிக்கிழமை', '1st Friday of each Tamil month', false],
     ['festival', 'இந்து பண்டிகைகள்', 'Hindu festivals', true]
   ];
   function icsEsc(t) { return String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
