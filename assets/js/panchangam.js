@@ -72,6 +72,24 @@
   function moonSid(jd) { return norm(moonLon(jd) - ayanamsa(jd)); }
   function elong(jd) { return norm(moonLon(jd) - sunLon(jd)); }
 
+  /* ---------- Jupiter (Keplerian elements, 1800-2050; good to ~0.1 deg) for Guru Peyarchi ---------- */
+  function kepler(el, T) {
+    var a = el[0] + el[1] * T, e = el[2] + el[3] * T, I = (el[4] + el[5] * T) * RAD, L = el[6] + el[7] * T, w = el[8] + el[9] * T, O = el[10] + el[11] * T;
+    var M = norm(L - w) * RAD, E = M, i;
+    if (M > Math.PI) M -= 2 * Math.PI; E = M;
+    for (i = 0; i < 12; i++) E = E - (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+    var xp = a * (Math.cos(E) - e), yp = a * Math.sqrt(1 - e * e) * Math.sin(E);
+    var om = (w - O) * RAD, Om = O * RAD, co = Math.cos(om), so = Math.sin(om), cO = Math.cos(Om), sO = Math.sin(Om), cI = Math.cos(I);
+    return [(co * cO - so * sO * cI) * xp + (-so * cO - co * sO * cI) * yp,
+            (co * sO + so * cO * cI) * xp + (-so * sO + co * cO * cI) * yp];
+  }
+  function jupiterSid(jd) {
+    var T = (jd - 2451545) / 36525;
+    var J = kepler([5.20288700, -0.00011607, 0.04838624, -0.00013253, 1.30439695, -0.00183714, 34.39644051, 3034.74612775, 14.72847983, 0.21252668, 100.47390909, 0.20469106], T);
+    var E = kepler([1.00000261, 0.00000562, 0.01671123, -0.00004392, -0.00001531, -0.01294668, 100.46457166, 35999.37244981, 102.93768193, 0.32327364, 0, 0], T);
+    return norm(Math.atan2(J[1] - E[1], J[0] - E[0]) / RAD - 23.85306);
+  }
+
   /* ---------- Sunrise / sunset (local, refraction -0.833 deg) ---------- */
   function sunEvent(y, m, d, rising) {
     var jd0 = istMidnightJD(y, m, d);
@@ -215,8 +233,14 @@
     tithiRule(25, 'தேய்பிறை ஏகாதசி', 'Ekadasi (waning moon)', 'tithi', 'ekadasi_k');
     tithiRule(5, 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', 'tithi', 'sashti');
     tithiRule(20, 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', 'tithi', 'sashti');
-    eveRule(12, 'பிரதோஷம்', 'Pradosham', 'pradosham');
-    eveRule(27, 'பிரதோஷம்', 'Pradosham', 'pradosham');
+    function pradoshamLabel(x) {
+      var ta = 'பிரதோஷம்', en = 'Pradosham';
+      if (x.dow === 6) { ta = 'சனி மகா பிரதோஷம்'; en = 'Pradosham (Maha Pradosham – Saturday)'; }
+      else if (x.dow === 1) { ta = 'சோம பிரதோஷம்'; en = 'Pradosham (Soma Pradosham – Monday)'; }
+      put(x, ta, en, 'tithi', 'pradosham');
+    }
+    pickRuns(function (x) { return x.tithiSunset === 12; }, null, pradoshamLabel);
+    pickRuns(function (x) { return x.tithiSunset === 27; }, null, pradoshamLabel);
     eveRule(18, 'சங்கடஹர சதுர்த்தி', 'Sankatahara Chaturthi', 'sankatahara');
     pickRuns(function (x) { return x.nakNoon === 2; }, null, function (x) { put(x, 'கார்த்திகை (முருகன் வழிபாடு)', 'Karthigai star (Murugan worship)', 'tithi', 'karthigai'); });
     everyDay(function (x) { if (x.tamil.day === 1) put(x, N.monthTa[x.tamil.month] + ' மாதப் பிறப்பு', N.monthEn[x.tamil.month] + ' month begins', 'month', 'month1'); });
@@ -266,6 +290,67 @@
     festival(function (x) { return x.tamil.month === 1 && x.nakNoon === 15; }, 'வைகாசி விசாகம்', 'Vaikasi Visakam', 20, true);
     festival(function (x) { return x.tamil.month === 11 && x.nakNoon === 11; }, 'பங்குனி உத்திரம்', 'Panguni Uthiram', 20, true);
     festival(function (x) { return x.tamil.month === 8 && x.nakNoon === 5 && x.tithiNoon >= 11 && x.tithiNoon <= 15 && x.tamil.day > 5; }, 'ஆருத்ரா தரிசனம்', 'Arudra Darisanam', 40, true);
+
+    // --- more recurring: Ashtami, Navami (new boxes) ---
+    tithiRule(7, 'வளர்பிறை அஷ்டமி', 'Ashtami (waxing moon)', 'tithi', 'ashtami');
+    tithiRule(22, 'தேய்பிறை அஷ்டமி – கால பைரவ அஷ்டமி', 'Ashtami (waning moon) – Kalabhairava Ashtami', 'tithi', 'ashtami');
+    tithiRule(8, 'வளர்பிறை நவமி', 'Navami (waxing moon)', 'tithi', 'navami');
+    tithiRule(23, 'தேய்பிறை நவமி', 'Navami (waning moon)', 'tithi', 'navami');
+
+    // --- Shiva and Guru observances ---
+    var SG = 'shivaguru';
+    everyDay(function (x) { if (x.tithiMidnight === 28 && x.tamil.month !== 10) put(x, 'மாத சிவராத்திரி', 'Masa Shivaratri', 'tithi', SG); });
+    pickRuns(function (x) { return x.nakNoon === 5; }, null, function (x) { put(x, 'திருவாதிரை (நடராஜர் வழிபாடு)', 'Thiruvathirai star (Nataraja worship)', 'tithi', SG); });
+    pickRuns(function (x) { return x.tithi === 14; }, function (x) { return x.tithiSunset === 14; }, function (x) {
+      if (x.tamil.month === 6) put(x, 'ஐப்பசி அன்னாபிஷேகம்', 'Aippasi Annabhishekam', 'major', SG);
+      if (x.nakNoon === 19 || x.nakNoon === 20) put(x, 'குரு பூர்ணிமா', 'Guru Poornima', 'major', SG);
+    });
+    var RT = ['மேஷம்','ரிஷபம்','மிதுனம்','கடகம்','சிம்மம்','கன்னி','துலாம்','விருச்சிகம்','தனுசு','மகரம்','கும்பம்','மீனம்'],
+        RE = ['Mesha','Rishabha','Mithuna','Kataka','Simha','Kanni','Thula','Vrischika','Dhanus','Makara','Kumbha','Meena'];
+    var lastSign = null, lastMarked = null;
+    for (k = 0; k < days.length - 1; k++) {
+      var sg = Math.floor(jupiterSid((days[k].sunrise + days[k].sunset) / 2) / 30);
+      if (lastSign !== null && sg !== lastSign && sg === (lastSign + 1) % 12 && sg !== lastMarked) {
+        lastMarked = sg;
+        if (inYear(days[k])) put(days[k], 'குருப் பெயர்ச்சி – ' + RT[sg] + ' ராசிக்கு', 'Guru Peyarchi – Jupiter enters ' + RE[sg] + ' rasi', 'major', SG);
+      }
+      lastSign = sg;
+    }
+
+    // --- more festivals (Hindu festivals box) ---
+    function grp(test, ta, en, win) { festival(test, ta, en, win || 28, false); }
+    pickRuns(function (x) { return x.tithi === 10; }, function (x) { return x.tithiSunset === 10; }, function (x) { if (x.tamil.month === 8) put(x, 'வைகுண்ட ஏகாதசி', 'Vaikunta Ekadasi', 'major'); });
+    grp(function (x) {
+      var sd = ((sunSid((x.sunrise + x.sunset) / 2)) + 360) % 360;
+      return (x.tithiNoon === 8) && (sd >= 335 || sd < 5);
+    }, 'ஸ்ரீ ராம நவமி', 'Rama Navami');
+    grp(function (x) { return x.tamil.month === 3 && x.nakNoon === 10; }, 'ஆடிப் பூரம்', 'Aadi Pooram');
+    pickRuns(function (x) { return x.tithi === 5; }, function (x) { return x.tithiSunset === 5; }, function (x) { if (x.tamil.month === 6) put(x, 'கந்த சஷ்டி (சூரசம்ஹாரம்)', 'Skanda Sashti (Soorasamharam)', 'major'); });
+    grp(function (x) { return (x.m === 8 && x.d >= 10) || (x.m === 9 && x.d <= 8) ? (x.tithiMidnight === 22) : false; }, 'கிருஷ்ண ஜெயந்தி (கோகுலாஷ்டமி)', 'Krishna Jayanthi (Gokulashtami)');
+    // Navaratri follow-ups: Saraswati / Ayudha Pooja (Navami) and Vijayadasami (Dashami)
+    for (k = 1; k < days.length - 1; k++) {
+      var nv = days[k];
+      if (nv.tamil.month === 5 && (nv.tithi === 0 || nv.tithiSunset === 0) && !(days[k - 1].tamil.month === 5 && (days[k - 1].tithi === 0 || days[k - 1].tithiSunset === 0))) {
+        var jn = -1, jd2 = -1, q;
+        for (q = k + 6; q < k + 12 && q < days.length; q++) { if (jn < 0 && days[q].tithiNoon === 8) jn = q; if (jd2 < 0 && Math.floor(elong(days[q].sunrise + 0.65 * (days[q].sunset - days[q].sunrise)) / 12) === 9) jd2 = q; }
+        if (jn < 0 && jd2 > 0) jn = jd2 - 1;
+        if (jd2 < 0 && jn > 0) jd2 = jn + 1;
+        if (jn > 0 && inYear(days[jn])) put(days[jn], 'சரஸ்வதி பூஜை / ஆயுத பூஜை', 'Saraswati Pooja / Ayudha Pooja', 'major');
+        if (jd2 > 0 && inYear(days[jd2])) put(days[jd2], 'விஜயதசமி', 'Vijayadasami', 'major');
+      }
+    }
+    // Aadi / Thai / Mahalaya Amavasai
+    pickRuns(function (x) { return x.tithi === 29; }, function (x) { return x.tithiSunset === 29; }, function (x) {
+      if (x.tamil.month === 3) put(x, 'ஆடி அமாவாசை', 'Aadi Amavasai', 'major');
+      if (x.tamil.month === 9) put(x, 'தை அமாவாசை', 'Thai Amavasai', 'major');
+      if (x.tamil.month === 5) put(x, 'மகாளய அமாவாசை', 'Mahalaya Amavasai', 'major');
+    });
+    // Varalakshmi Vratham: the Friday on or just before Shravana Pournami (full moon with Moon in Sravana/Dhanishta)
+    pickRuns(function (x) { return x.tithi === 14; }, function (x) { return x.tithiSunset === 14; }, function (x) {
+      var sd2 = sunSid((x.sunrise + x.sunset) / 2); if (sd2 < 105 || sd2 > 135) return;
+      var ci = idxOf[key(x.y, x.m, x.d)], b;
+      for (b = ci - 1; b > ci - 8; b--) if (days[b].dow === 5) { if (inYear(days[b])) put(days[b], 'வரலட்சுமி விரதம்', 'Varalakshmi Vratham', 'major'); break; }
+    });
 
     yearCache[year] = ev;
     return ev;

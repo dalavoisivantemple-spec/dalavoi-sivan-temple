@@ -138,6 +138,10 @@
     ['sashti', 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', false],
     ['month1', 'தமிழ் மாதப் பிறப்பு (மாதத்தின் முதல் நாள்)', '1st day of each Tamil month', false],
     ['friday1', 'தமிழ் மாதத்தின் முதல் வெள்ளிக்கிழமை', '1st Friday of each Tamil month', false],
+    ['shivaguru', 'சிவன் மற்றும் குரு சிறப்பு நாட்கள் (மாத சிவராத்திரி, திருவாதிரை, குருப் பெயர்ச்சி, குரு பூர்ணிமா, அன்னாபிஷேகம்)', 'Shiva and Guru observances (Masa Shivaratri, Thiruvathirai, Guru Peyarchi, Guru Poornima, Annabhishekam)', false],
+    ['karthigai', 'கிருத்திகை (கார்த்திகை நட்சத்திரம்)', 'Krittika (Karthigai star)', false],
+    ['ashtami', 'அஷ்டமி (வளர்பிறை, தேய்பிறை)', 'Ashtami (waxing and waning)', false],
+    ['navami', 'நவமி (வளர்பிறை, தேய்பிறை)', 'Navami (waxing and waning)', false],
     ['chandrashtama', 'சந்திராஷ்டமம் (உங்கள் ராசி தேவை)', 'Chandrashtama (needs your rasi)', false],
     ['festival', 'இந்து பண்டிகைகள்', 'Hindu festivals', true]
   ];
