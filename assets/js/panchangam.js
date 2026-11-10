@@ -186,7 +186,7 @@
       idxOf[key(i.y, i.m, i.d)] = days.length; days.push(i);
     }
     var ev = {};
-    function put(i, ta, en, kind) { var kk = key(i.y, i.m, i.d); (ev[kk] = ev[kk] || []).push({ ta: ta, en: en, kind: kind }); }
+    function put(i, ta, en, kind, cat) { var kk = key(i.y, i.m, i.d); (ev[kk] = ev[kk] || []).push({ ta: ta, en: en, kind: kind, cat: cat || (kind === 'major' ? 'festival' : kind === 'guru' ? 'guru' : '') }); }
     function inYear(i) { return i.y === year; }
 
     // Generic "first day" picker: pred(i) true on a run of days -> mark the first day of the run.
@@ -198,26 +198,28 @@
         else if (fallback && !main(cur) && !main(prev) && !main(next) && fallback(cur)) { if (inYear(cur)) label(cur); }
       }
     }
-    function tithiRule(T, ta, en, kind) {
+    function tithiRule(T, ta, en, kind, cat) {
       pickRuns(function (x) { return x.tithi === T; }, function (x) { return x.tithiSunset === T; },
-        function (x) { put(x, ta, en, kind); });
+        function (x) { put(x, ta, en, kind, cat); });
     }
-    function eveRule(T, ta, en) {   // evening observances: tithi present at pradosha time
-      pickRuns(function (x) { return x.tithiSunset === T; }, null, function (x) { put(x, ta, en, 'tithi'); });
+    function eveRule(T, ta, en, cat) {   // evening observances: tithi present at pradosha time
+      pickRuns(function (x) { return x.tithiSunset === T; }, null, function (x) { put(x, ta, en, 'tithi', cat); });
     }
     function everyDay(fn) { for (k = 1; k < days.length - 1; k++) if (inYear(days[k])) fn(days[k], days[k - 1]); }
 
     // --- recurring ---
     everyDay(function (x) { if (x.dow === 4) put(x, 'வியாழக்கிழமை – குரு வழிபாடு', 'Thursday – Guru worship', 'guru'); });
-    tithiRule(29, 'அமாவாசை', 'Amavasai (new moon)', 'tithi');
-    tithiRule(14, 'பௌர்ணமி', 'Pournami (full moon)', 'tithi');
-    tithiRule(10, 'ஏகாதசி', 'Ekadasi', 'tithi');
-    tithiRule(25, 'ஏகாதசி', 'Ekadasi', 'tithi');
-    tithiRule(5, 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', 'tithi');
-    eveRule(12, 'பிரதோஷம்', 'Pradosham');
-    eveRule(27, 'பிரதோஷம்', 'Pradosham');
-    eveRule(18, 'சங்கடஹர சதுர்த்தி', 'Sankatahara Chaturthi');
-    pickRuns(function (x) { return x.nakNoon === 2; }, null, function (x) { put(x, 'கார்த்திகை (முருகன் வழிபாடு)', 'Karthigai star (Murugan worship)', 'tithi'); });
+    tithiRule(29, 'அமாவாசை', 'Amavasai (new moon)', 'tithi', 'amavasai');
+    tithiRule(14, 'பௌர்ணமி', 'Pournami (full moon)', 'tithi', 'pournami');
+    tithiRule(10, 'வளர்பிறை ஏகாதசி', 'Ekadasi (waxing moon)', 'tithi', 'ekadasi_w');
+    tithiRule(25, 'தேய்பிறை ஏகாதசி', 'Ekadasi (waning moon)', 'tithi', 'ekadasi_k');
+    tithiRule(5, 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', 'tithi', 'sashti');
+    tithiRule(20, 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', 'tithi', 'sashti');
+    eveRule(12, 'பிரதோஷம்', 'Pradosham', 'pradosham');
+    eveRule(27, 'பிரதோஷம்', 'Pradosham', 'pradosham');
+    eveRule(18, 'சங்கடஹர சதுர்த்தி', 'Sankatahara Chaturthi', 'sankatahara');
+    pickRuns(function (x) { return x.nakNoon === 2; }, null, function (x) { put(x, 'கார்த்திகை (முருகன் வழிபாடு)', 'Karthigai star (Murugan worship)', 'tithi', 'karthigai'); });
+    everyDay(function (x) { if (x.tamil.day === 1) put(x, N.monthTa[x.tamil.month] + ' மாதப் பிறப்பு', N.monthEn[x.tamil.month] + ' month begins', 'month', 'month1'); });
 
     // --- fixed by Tamil date ---
     function tamilRule(mo, dy, ta, en) {

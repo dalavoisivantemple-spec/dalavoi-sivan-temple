@@ -301,3 +301,14 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
 @media (hover:none) and (pointer:coarse){.upi-pay{display:inline-block}}
 .payee{font-size:.95rem;color:var(--muted);margin:.4rem 0 0}
 .qr{background:#fff}
+.cal-add{grid-column:1/-1;margin-top:.4rem;text-align:center}
+.cal-dlg{width:min(34rem,calc(100% - 1.5rem));max-height:calc(100% - 1.5rem);overflow:auto;border:0;border-top:4px solid var(--gold);border-radius:8px;padding:1.2rem;color:var(--ink)}
+.cal-dlg::backdrop{background:rgba(20,23,31,.6)}
+.cal-dlg h3{margin:0 0 .8rem}
+.cal-dlg fieldset{border:1px solid #cfd6ea;border-radius:6px;margin:0 0 .8rem;padding:.6rem .8rem}
+.cal-dlg legend{font-weight:700;padding:0 .3rem;color:var(--indigo-deep)}
+.cal-yr label{margin-right:1.2rem}
+.cal-cat{display:flex;gap:.6rem;align-items:flex-start;padding:.35rem 0;cursor:pointer}
+.cal-cat input,.cal-yr input{width:1.2rem;height:1.2rem;flex:none;margin-top:.15rem;accent-color:var(--indigo-deep)}
+.cal-link{background:none;border:0;padding:.3rem 0;color:var(--indigo);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.cal-dlg .btn[disabled]{opacity:.5;cursor:not-allowed}

@@ -112,7 +112,7 @@
         var showMonth = d === 1 || i.tamil.day === 1;
         bi(t, showMonth ? N.monthTa[i.tamil.month] + ' ' + i.tamil.day : String(i.tamil.day), showMonth ? N.monthEn[i.tamil.month].slice(0, 3) + ' ' + i.tamil.day : String(i.tamil.day));
         cell.appendChild(t);
-        var tag = ev.filter(function (e) { return e.kind === 'major'; })[0] || ev.filter(function (e) { return e.kind !== 'guru'; })[0];
+        var tag = ev.filter(function (e) { return e.kind === 'major'; })[0] || ev.filter(function (e) { return e.kind !== 'guru' && e.kind !== 'month'; })[0];
         if (tag) { var f = el('span', 'f'); bi(f, tag.ta, tag.en); cell.appendChild(f); }
         cell.addEventListener('click', function () { setSel(view.y, view.m, d, false); });
         grid.appendChild(cell);
@@ -121,6 +121,103 @@
     bi(legend, 'நாள்காட்டி கணிதக் கணக்கீட்டால் (திருக்கணிதம்) பெறப்பட்டது; தலத்தின் இருப்பிடத்திற்கு ஏற்றது. கோயில் பஞ்சாங்கத்துடன் ஓரிரு நாள் / சில நிமிட வேறுபாடு இருக்கலாம் — பண்டிகை நாட்களுக்கு கோயில் பஞ்சாங்கமே இறுதி.',
       'Calculated astronomically (Drik) for Dalavoipattinam. It can differ from the temple almanac by a day or a few minutes. For festival dates, the temple’s almanac is final.');
   }
+
+  /* ---------- Add events to my calendar (.ics download: works on Android, iPhone and laptops) ---------- */
+  var CATS = [
+    ['guru', 'வியாழக்கிழமை – குரு வழிபாடு', 'Thursday – Guru worship', false],
+    ['ekadasi_w', 'வளர்பிறை ஏகாதசி', 'Ekadasi (waxing moon)', false],
+    ['ekadasi_k', 'தேய்பிறை ஏகாதசி', 'Ekadasi (waning moon)', false],
+    ['pradosham', 'பிரதோஷம்', 'Pradosham', false],
+    ['amavasai', 'அமாவாசை', 'Amavasai (new moon)', false],
+    ['pournami', 'பௌர்ணமி', 'Pournami (full moon)', false],
+    ['sankatahara', 'சங்கடஹர சதுர்த்தி', 'Sankatahara Chaturthi', false],
+    ['sashti', 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', false],
+    ['month1', 'தமிழ் மாதப் பிறப்பு (மாதத்தின் முதல் நாள்)', '1st day of each Tamil month', false],
+    ['festival', 'இந்து பண்டிகைகள்', 'Hindu festivals', true]
+  ];
+  function icsEsc(t) { return String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+  function fold(line) {
+    var out = [], cur = '', bytes = 0, limit = 74, i, ch, b;
+    for (i = 0; i < line.length; i++) {
+      ch = String.fromCodePoint(line.codePointAt(i)); if (ch.length > 1) i++;
+      b = unescape(encodeURIComponent(ch)).length;
+      if (bytes + b > limit) { out.push(cur); cur = ' '; bytes = 1; limit = 74; }
+      cur += ch; bytes += b;
+    }
+    out.push(cur); return out.join('\r\n');
+  }
+  function p2(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(y, m, d) { return '' + y + p2(m) + p2(d); }
+  function buildICS(year, picked) {
+    var ev = P.yearEvents(year), keys = Object.keys(ev), L = [], n = 0, stamp;
+    var now = new Date(); stamp = now.getUTCFullYear() + p2(now.getUTCMonth() + 1) + p2(now.getUTCDate()) + 'T' + p2(now.getUTCHours()) + p2(now.getUTCMinutes()) + p2(now.getUTCSeconds()) + 'Z';
+    L.push('BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Dalavoipattinam Sivan Guru Temple//Tamil Calendar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+      'X-WR-CALNAME:' + icsEsc('தளவாய்பட்டிணம் சிவன் குரு கோயில் · Dalavoipattinam temple'), 'X-WR-TIMEZONE:Asia/Kolkata');
+    keys.sort(function (a, b) { var A = a.split('-').map(Number), B = b.split('-').map(Number); return (A[0] - B[0]) || (A[1] - B[1]) || (A[2] - B[2]); });
+    keys.forEach(function (k) {
+      var parts = k.split('-').map(Number), y = parts[0], m = parts[1], d = parts[2], info = P.dayInfo(y, m, d), tm = info.tamil;
+      ev[k].forEach(function (e, idx) {
+        if (!e.cat || picked.indexOf(e.cat) < 0) return;
+        var nx = new Date(Date.UTC(y, m - 1, d + 1));
+        var desc = tm.day + ' ' + N.monthTa[tm.month] + ' ' + e.ta + '\n' + N.monthEn[tm.month] + ' ' + tm.day + ' – ' + e.en +
+          '\nதளவாய்பட்டிணம் சிவன் குரு கோயில் · Dalavoipattinam Sivan Guru Temple\ndalavoisivangurutemple.org\nகணக்கிடப்பட்ட தேதி; கோயில் பஞ்சாங்கமே இறுதி. Calculated date; the temple almanac prevails.';
+        L.push('BEGIN:VEVENT', 'UID:' + e.cat + '-' + ymd(y, m, d) + '-' + idx + '@dalavoisivangurutemple.org', 'DTSTAMP:' + stamp,
+          'DTSTART;VALUE=DATE:' + ymd(y, m, d), 'DTEND;VALUE=DATE:' + ymd(nx.getUTCFullYear(), nx.getUTCMonth() + 1, nx.getUTCDate()),
+          'SUMMARY:' + icsEsc(e.ta + ' · ' + e.en), 'DESCRIPTION:' + icsEsc(desc), 'TRANSP:TRANSPARENT', 'END:VEVENT');
+        n++;
+      });
+    });
+    L.push('END:VCALENDAR');
+    return { text: L.map(fold).join('\r\n') + '\r\n', count: n };
+  }
+
+  var addWrap = el('div', 'cal-add'), addBtn = el('button', 'btn btn-gold'); addBtn.type = 'button';
+  bi(addBtn, 'நாள்காட்டியில் சேர்க்க', 'Add events to my calendar');
+  addWrap.appendChild(addBtn);
+  var addHint = el('p', 'cal-note'); bi(addHint, 'ஆண்டு முழுவதற்குமான நாட்களைத் தேர்ந்தெடுத்து, உங்கள் கைபேசி அல்லது கணினி நாள்காட்டியில் சேர்க்கலாம்.', 'Pick the days you want for the whole year and add them to your phone or computer calendar.');
+  addWrap.appendChild(addHint);
+  host.appendChild(addWrap);
+
+  var dlg = document.createElement('dialog'); dlg.className = 'cal-dlg'; dlg.setAttribute('aria-labelledby', 'cal-dlg-title');
+  var form = el('form'); form.method = 'dialog';
+  var h = el('h3'); h.id = 'cal-dlg-title'; bi(h, 'நாள்காட்டியில் சேர்க்க', 'Add events to my calendar'); form.appendChild(h);
+  var yr = el('fieldset', 'cal-yr'), yl = el('legend'); bi(yl, 'ஆண்டு', 'Year'); yr.appendChild(yl);
+  [today.y, today.y + 1].forEach(function (y, i) {
+    var lb = el('label'), r = document.createElement('input'); r.type = 'radio'; r.name = 'cal-year'; r.value = y; r.checked = i === 0;
+    lb.appendChild(r); lb.appendChild(el('span', '', ' ' + y)); yr.appendChild(lb);
+  });
+  form.appendChild(yr);
+  var fs = el('fieldset', 'cal-cats'), lg = el('legend'); bi(lg, 'எவற்றைச் சேர்க்க வேண்டும்?', 'What do you want to add?'); fs.appendChild(lg);
+  var boxes = [];
+  CATS.forEach(function (c) {
+    var lb = el('label', 'cal-cat'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = c[0]; cb.checked = c[3]; boxes.push(cb);
+    lb.appendChild(cb); var t = el('span'); bi(t, c[1], c[2]); lb.appendChild(t); fs.appendChild(lb);
+  });
+  form.appendChild(fs);
+  var all = el('button', 'cal-link'); all.type = 'button'; bi(all, 'அனைத்தையும் தேர்ந்தெடு / நீக்கு', 'Select all / none');
+  all.addEventListener('click', function () { var any = boxes.some(function (b) { return !b.checked; }); boxes.forEach(function (b) { b.checked = any; }); sync(); });
+  form.appendChild(all);
+  var msg = el('p', 'cal-note');
+  bi(msg, 'ஐபோன்: கோப்பைத் திறந்து "அனைத்தையும் சேர்" தட்டவும். ஆண்ட்ராய்டு: கோப்பைத் திறந்து Google Calendar-ஐத் தேர்ந்தெடுக்கவும். கணினி: கோப்பைத் திறக்கவும் அல்லது Google Calendar-ல் Import செய்யவும்.',
+    'iPhone: open the file and tap Add All. Android: open the file and choose Google Calendar. Laptop: open the file, or import it in Google Calendar.');
+  form.appendChild(msg);
+  var row = el('div', 'cd-nav');
+  var cancel = el('button', 'btn btn-sm btn-line-ink'); cancel.type = 'button'; bi(cancel, 'மூடு', 'Close'); cancel.addEventListener('click', function () { dlg.close(); });
+  var go = el('button', 'btn btn-sm btn-gold'); go.type = 'submit'; bi(go, 'சேர்', 'Add');
+  row.appendChild(go); row.appendChild(cancel); form.appendChild(row); dlg.appendChild(form); document.body.appendChild(dlg);
+  function sync() { go.disabled = !boxes.some(function (b) { return b.checked; }); }
+  boxes.forEach(function (b) { b.addEventListener('change', sync); }); sync();
+  addBtn.addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var year = +form.querySelector('input[name=cal-year]:checked').value, picked = boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
+    if (!picked.length) return;
+    var res = buildICS(year, picked), blob = new Blob([res.text], { type: 'text/calendar;charset=utf-8' }), url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = 'dalavoi-temple-calendar-' + year + '.ics'; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 4000);
+    try { if (window.gtag) window.gtag('event', 'calendar_add', { year: year, categories: picked.length, events: res.count }); } catch (x) {}
+    dlg.close();
+  });
 
   drawDaily(); drawMonth();
 })();
