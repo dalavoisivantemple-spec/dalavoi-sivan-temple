@@ -330,3 +330,10 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
 .cal-rasi[hidden]{display:none}
 .cal-rasi span{display:block;font-size:.9rem;margin-bottom:.25rem}
 .cal-rasi select{width:100%;max-width:18rem;padding:.5rem;font:inherit;border:1px solid #c9b98f;border-radius:6px;background:#fff}
+
+/* villages */
+.sec-villages{border-top:1px solid rgba(0,0,0,.08)}
+.sec-villages .prose{max-width:46rem;margin-bottom:1.5rem}
+.villages{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.75rem}
+.villages li{padding:.85rem 1rem;border:1px solid #d8c9a0;border-left:4px solid var(--gold,#c8962e);border-radius:6px;background:#fffdf7;font-weight:600}
+.villages-note{margin-top:1.25rem;font-style:italic;opacity:.85}
