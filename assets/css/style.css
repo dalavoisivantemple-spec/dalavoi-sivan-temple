@@ -333,7 +333,11 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
 
 /* villages */
 .sec-villages{border-top:1px solid rgba(0,0,0,.08)}
-.sec-villages .prose{max-width:46rem;margin-bottom:1.5rem}
-.villages{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.75rem}
-.villages li{padding:.85rem 1rem;border:1px solid #d8c9a0;border-left:4px solid var(--gold,#c8962e);border-radius:6px;background:#fffdf7;font-weight:600}
-.villages-note{margin-top:1.25rem;font-style:italic;opacity:.85}
+.sec-villages .prose{max-width:46rem;margin-bottom:2rem}
+.villages{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15.5rem,100%),1fr));gap:1rem 1.1rem}
+.villages li{padding:0;border:1px solid #d8c9a0;border-left:4px solid var(--gold,#c8962e);border-radius:6px;background:#fffdf7;font-weight:600;font-size:1.05rem;line-height:1.5;min-width:0;overflow-wrap:anywhere}
+.villages-note{margin-top:1.75rem;font-style:italic;opacity:.85}
+
+.villages li a{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:1rem 1.25rem;color:inherit;text-decoration:none}
+.villages li a:hover,.villages li a:focus-visible{background:#fff4d6}
+.villages .pin{flex:none;font-size:.95rem;opacity:.75}
