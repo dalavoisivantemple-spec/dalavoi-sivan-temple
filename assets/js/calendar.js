@@ -138,6 +138,7 @@
     ['sashti', 'சஷ்டி (முருகன்)', 'Sashti (Murugan)', false],
     ['month1', 'தமிழ் மாதப் பிறப்பு (மாதத்தின் முதல் நாள்)', '1st day of each Tamil month', false],
     ['friday1', 'தமிழ் மாதத்தின் முதல் வெள்ளிக்கிழமை', '1st Friday of each Tamil month', false],
+    ['chandrashtama', 'சந்திராஷ்டமம் (உங்கள் ராசி தேவை)', 'Chandrashtama (needs your rasi)', false],
     ['festival', 'இந்து பண்டிகைகள்', 'Hindu festivals', true]
   ];
   function icsEsc(t) { return String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
@@ -153,7 +154,11 @@
   }
   function p2(n) { return (n < 10 ? '0' : '') + n; }
   function ymd(y, m, d) { return '' + y + p2(m) + p2(d); }
-  function buildICS(year, picked) {
+  var RASI_TA = ['மேஷம்', 'ரிஷபம்', 'மிதுனம்', 'கடகம்', 'சிம்மம்', 'கன்னி', 'துலாம்', 'விருச்சிகம்', 'தனுசு', 'மகரம்', 'கும்பம்', 'மீனம்'];
+  var RASI_EN = ['Mesha', 'Rishabha', 'Mithuna', 'Kataka', 'Simha', 'Kanni', 'Thula', 'Vrischika', 'Dhanus', 'Makara', 'Kumbha', 'Meena'];
+  function utcStamp(jd) { var t = new Date((jd - 2440587.5) * 86400000); return t.getUTCFullYear() + p2(t.getUTCMonth() + 1) + p2(t.getUTCDate()) + 'T' + p2(t.getUTCHours()) + p2(t.getUTCMinutes()) + '00Z'; }
+  function hm(jd) { var q = P.istParts(jd); return p2(q.d) + '-' + p2(q.m) + ' ' + p2(q.h) + ':' + p2(q.mi); }
+  function buildICS(year, picked, rasi) {
     var ev = P.yearEvents(year), keys = Object.keys(ev), L = [], n = 0, stamp;
     var now = new Date(); stamp = now.getUTCFullYear() + p2(now.getUTCMonth() + 1) + p2(now.getUTCDate()) + 'T' + p2(now.getUTCHours()) + p2(now.getUTCMinutes()) + p2(now.getUTCSeconds()) + 'Z';
     L.push('BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Dalavoipattinam Sivan Guru Temple//Tamil Calendar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
@@ -172,6 +177,17 @@
         n++;
       });
     });
+    if (picked.indexOf('chandrashtama') >= 0 && rasi >= 0) {
+      P.chandrashtama(year, rasi).forEach(function (r, i) {
+        var q = P.istParts(r.s), tm = P.dayInfo(q.y, q.m, q.d).tamil;
+        var ta = 'சந்திராஷ்டமம் (' + RASI_TA[rasi] + ' ராசி)', en = 'Chandrashtama (' + RASI_EN[rasi] + ' rasi)';
+        var desc = tm.day + ' ' + N.monthTa[tm.month] + ' ' + ta + '\n' + hm(r.s) + ' IST → ' + hm(r.e) + ' IST' + '\n' + N.monthEn[tm.month] + ' ' + tm.day + ' – ' + en +
+          '\nதளவாய்பட்டிணம் சிவன் குரு கோயில் · Dalavoipattinam Sivan Guru Temple\ndalavoisivangurutemple.org\nகணக்கிடப்பட்ட நேரம்; கோயில் பஞ்சாங்கமே இறுதி. Calculated time; the temple almanac prevails.';
+        L.push('BEGIN:VEVENT', 'UID:chandrashtama-' + rasi + '-' + utcStamp(r.s) + '-' + i + '@dalavoisivangurutemple.org', 'DTSTAMP:' + stamp,
+          'DTSTART:' + utcStamp(r.s), 'DTEND:' + utcStamp(r.e), 'SUMMARY:' + icsEsc(ta + ' · ' + en), 'DESCRIPTION:' + icsEsc(desc), 'TRANSP:TRANSPARENT', 'END:VEVENT');
+        n++;
+      });
+    }
     L.push('END:VCALENDAR');
     return { text: L.map(fold).join('\r\n') + '\r\n', count: n };
   }
@@ -198,6 +214,11 @@
     var lb = el('label', 'cal-cat'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = c[0]; cb.checked = c[3]; boxes.push(cb);
     lb.appendChild(cb); var t = el('span'); bi(t, c[1], c[2]); lb.appendChild(t); fs.appendChild(lb);
   });
+  var rasiBox = el('label', 'cal-rasi'); rasiBox.hidden = true;
+  var rasiLbl = el('span'); bi(rasiLbl, 'உங்கள் ராசி (ஜன்ம ராசி)', 'Your rasi (janma rasi)'); rasiBox.appendChild(rasiLbl);
+  var rasiSel = document.createElement('select'), ph = document.createElement('option'); ph.value = ''; ph.textContent = '— ராசி / Rasi —'; rasiSel.appendChild(ph);
+  RASI_TA.forEach(function (n, i) { var o = document.createElement('option'); o.value = i; o.textContent = n + ' · ' + RASI_EN[i]; rasiSel.appendChild(o); });
+  rasiBox.appendChild(rasiSel); fs.appendChild(rasiBox);
   form.appendChild(fs);
   var all = el('button', 'cal-link'); all.type = 'button'; bi(all, 'அனைத்தையும் தேர்ந்தெடு / நீக்கு', 'Select all / none');
   all.addEventListener('click', function () { var any = boxes.some(function (b) { return !b.checked; }); boxes.forEach(function (b) { b.checked = any; }); sync(); });
@@ -210,14 +231,18 @@
   var cancel = el('button', 'btn btn-sm btn-line-ink'); cancel.type = 'button'; bi(cancel, 'மூடு', 'Close'); cancel.addEventListener('click', function () { dlg.close(); });
   var go = el('button', 'btn btn-sm btn-gold'); go.type = 'submit'; bi(go, 'சேர்', 'Add');
   row.appendChild(go); row.appendChild(cancel); form.appendChild(row); dlg.appendChild(form); document.body.appendChild(dlg);
-  function sync() { go.disabled = !boxes.some(function (b) { return b.checked; }); }
-  boxes.forEach(function (b) { b.addEventListener('change', sync); }); sync();
+  var chBox = boxes.filter(function (b) { return b.value === 'chandrashtama'; })[0];
+  function sync() {
+    rasiBox.hidden = !chBox.checked;
+    go.disabled = !boxes.some(function (b) { return b.checked; }) || (chBox.checked && rasiSel.value === '');
+  }
+  boxes.forEach(function (b) { b.addEventListener('change', sync); }); rasiSel.addEventListener('change', sync); sync();
   addBtn.addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var year = +form.querySelector('input[name=cal-year]:checked').value, picked = boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
-    if (!picked.length) return;
-    var res = buildICS(year, picked), blob = new Blob([res.text], { type: 'text/calendar;charset=utf-8' }), url = URL.createObjectURL(blob);
+    if (!picked.length || (chBox.checked && rasiSel.value === '')) return;
+    var res = buildICS(year, picked, chBox.checked ? +rasiSel.value : -1), blob = new Blob([res.text], { type: 'text/calendar;charset=utf-8' }), url = URL.createObjectURL(blob);
     var a = document.createElement('a'); a.href = url; a.download = 'dalavoi-temple-calendar-' + year + '.ics'; document.body.appendChild(a); a.click();
     setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 4000);
     try { if (window.gtag) window.gtag('event', 'calendar_add', { year: year, categories: picked.length, events: res.count }); } catch (x) {}

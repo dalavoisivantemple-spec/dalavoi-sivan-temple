@@ -325,3 +325,8 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
   .cd-list{grid-template-columns:1fr;gap:.1rem}
   .cd-list dd{margin-bottom:.55rem}
 }
+
+.cal-rasi{display:block;margin:.4rem 0 .2rem 1.7rem}
+.cal-rasi[hidden]{display:none}
+.cal-rasi span{display:block;font-size:.9rem;margin-bottom:.25rem}
+.cal-rasi select{width:100%;max-width:18rem;padding:.5rem;font:inherit;border:1px solid #c9b98f;border-radius:6px;background:#fff}

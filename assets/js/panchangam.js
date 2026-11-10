@@ -290,8 +290,22 @@
     return idx < 15 ? (lang === 'ta' ? 'வளர்பிறை' : 'Waxing (Shukla)') : (lang === 'ta' ? 'தேய்பிறை' : 'Waning (Krishna)');
   }
 
+  /* Chandrashtama: Moon in the 8th rasi from the janma rasi (0=Mesha..11=Meena). Returns [{s,e}] as JD, starting within the given IST year. */
+  function chandrashtama(year, rasi) {
+    var target = (rasi + 7) % 12, j0 = istMidnightJD(year, 1, 1) - 4, j1 = istMidnightJD(year + 1, 1, 1), out = [], step = 0.1, j, inn, prev = false, st = 0;
+    function inside(jd) { return Math.floor(moonSid(jd) / 30) === target; }
+    function edge(a, b) { var i, m, fa = inside(a); for (i = 0; i < 40; i++) { m = (a + b) / 2; if (inside(m) === fa) a = m; else b = m; } return (a + b) / 2; }
+    for (j = j0; j <= j1 + 3; j += step) {
+      inn = inside(j);
+      if (inn && !prev) st = edge(j - step, j);
+      if (!inn && prev) { var en = edge(j - step, j); if (st >= istMidnightJD(year, 1, 1) && st < j1) out.push({ s: st, e: en }); }
+      prev = inn;
+    }
+    return out;
+  }
+
   var api = {
-    N: N, dayInfo: dayInfo, eventsFor: eventsFor, yearEvents: yearEvents, tamilDate: tamilDate,
+    chandrashtama: chandrashtama, N: N, dayInfo: dayInfo, eventsFor: eventsFor, yearEvents: yearEvents, tamilDate: tamilDate,
     sunLon: sunLon, moonLon: moonLon, ayanamsa: ayanamsa, sunSid: sunSid, moonSid: moonSid,
     sunrise: sunrise, sunset: sunset, fmtTime: fmtTime, istParts: istParts,
     tithiName: tithiName, paksha: paksha, jdFromUTCms: jdFromUTCms, istMidnightJD: istMidnightJD
