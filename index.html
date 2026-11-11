@@ -435,6 +435,46 @@
   </div>
 </section>
 
+<!-- FEEDBACK -->
+<section class="sec sec-wash" id="feedback">
+  <div class="wrap">
+    <div class="prose">
+      <h2><span class="ta">உங்கள் கருத்தைப் பகிருங்கள்</span><span class="en">Share your feedback</span></h2>
+      <p class="ta">இத்தளம் குறித்த உங்கள் கருத்து, ஆலோசனை அல்லது பிரார்த்தனை வேண்டுகோளை எங்களுக்குத் தெரிவியுங்கள். திருக்கோயில் அறக்கட்டளை ஒவ்வொரு செய்தியையும் படிக்கிறது.</p>
+      <p class="en">Tell us what you think of the website, or send a suggestion or a prayer request. The temple trust reads every message.</p>
+    </div>
+    <form class="fb" id="fb-form" action="#" method="post" novalidate data-endpoint="https://script.google.com/macros/s/AKfycbwx9yZlrHrtmAxmuTkb1LOlj6x_fc2IeN37MfgSNLf9FaEXC4c4XtDZh474Fd1W4UyY/exec">
+      <fieldset class="fb-type">
+        <legend><span class="ta">செய்தியின் வகை</span><span class="en">Type of message</span></legend>
+        <label><input type="radio" name="type" value="Feedback" checked><span class="ta">கருத்து</span><span class="en">Feedback</span></label>
+        <label><input type="radio" name="type" value="Suggestion"><span class="ta">ஆலோசனை</span><span class="en">Suggestion</span></label>
+        <label><input type="radio" name="type" value="Prayer request"><span class="ta">பிரார்த்தனை வேண்டுகோள்</span><span class="en">Prayer request</span></label>
+      </fieldset>
+      <fieldset class="fb-rate">
+        <legend><span class="ta">இத்தளம் எப்படி இருந்தது? (விருப்பம்)</span><span class="en">How was your visit to the website? (optional)</span></legend>
+        <div class="stars">
+          <input type="radio" name="rating" id="st5" value="5"><label for="st5" title="5"><span class="sr">5</span>&#9733;</label>
+          <input type="radio" name="rating" id="st4" value="4"><label for="st4" title="4"><span class="sr">4</span>&#9733;</label>
+          <input type="radio" name="rating" id="st3" value="3"><label for="st3" title="3"><span class="sr">3</span>&#9733;</label>
+          <input type="radio" name="rating" id="st2" value="2"><label for="st2" title="2"><span class="sr">2</span>&#9733;</label>
+          <input type="radio" name="rating" id="st1" value="1"><label for="st1" title="1"><span class="sr">1</span>&#9733;</label>
+        </div>
+      </fieldset>
+      <div class="fb-row">
+        <label class="fb-f"><span class="fb-l"><span class="ta">உங்கள் பெயர் (விருப்பம்)</span><span class="en">Your name (optional)</span></span><input type="text" name="name" maxlength="80" autocomplete="name"></label>
+        <label class="fb-f"><span class="fb-l"><span class="ta">உங்கள் ஊர் (விருப்பம்)</span><span class="en">Your village or town (optional)</span></span><input type="text" name="village" maxlength="80"></label>
+      </div>
+      <label class="fb-f"><span class="fb-l"><span class="ta">உங்கள் செய்தி</span><span class="en">Your message</span></span><textarea name="message" rows="5" maxlength="2000" required></textarea></label>
+      <label class="fb-f"><span class="fb-l"><span class="ta">பதில் வேண்டுமெனில் மட்டும் தொலைபேசி அல்லது மின்னஞ்சல்</span><span class="en">Phone or email, only if you would like a reply</span></span><input type="text" name="contact" maxlength="80" autocomplete="off"></label>
+      <div class="fb-hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="fb-note"><span class="ta">உங்கள் விவரங்கள் அறக்கட்டளை பதிலளிக்க மட்டுமே பயன்படுத்தப்படும். வேறு யாருடனும் பகிரப்படாது.</span><span class="en">Your details are used only by the temple trust to reply. They are never shared.</span></p>
+      <button class="btn btn-ink" type="submit"><span class="ta">அனுப்பு</span><span class="en">Send</span></button>
+      <p class="fb-msg" id="fb-ok" role="status" hidden><span class="ta">நன்றி. உங்கள் செய்தி கிடைத்தது.</span><span class="en">Thank you. Your message has been received.</span></p>
+      <p class="fb-msg fb-err" id="fb-err" role="alert" hidden><span class="ta">அனுப்ப இயலவில்லை. மீண்டும் முயலவும் அல்லது கோயிலை அழைக்கவும்.</span><span class="en">Could not send. Please try again, or call the temple.</span></p>
+    </form>
+  </div>
+</section>
+
 <!-- VISIT -->
 <section class="sec sec-light" id="visit">
   <div class="wrap split split-visit">
@@ -517,5 +557,6 @@
 <script src="assets/js/panchangam.js"></script>
 <script src="assets/js/calendar.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/feedback.js"></script>
 </body>
 </html>

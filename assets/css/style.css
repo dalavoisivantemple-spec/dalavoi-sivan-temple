@@ -364,3 +364,30 @@ dialog#lightbox::backdrop{background:rgba(10,12,18,.88)}
 .fut-cta p{margin:0 0 .5rem;font-size:1.1rem}
 .fut-cta .btn{margin-top:.75rem}
 .sec-future .btn-gold,.sec-future .btn-gold:hover{color:var(--granite)}
+
+/* ---------- Feedback form ---------- */
+.fb{max-width:46rem;margin-top:1.5rem;display:grid;gap:1.1rem}
+.fb fieldset{border:0;margin:0;padding:0;min-width:0}
+.fb legend,.fb-l{display:block;font-weight:700;margin-bottom:.35rem;color:var(--ink)}
+.fb-type{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem}
+.fb-type legend{width:100%}
+.fb-type label{display:flex;align-items:center;gap:.45rem;cursor:pointer}
+.fb-type input{width:1.15rem;height:1.15rem;accent-color:var(--indigo-deep)}
+.fb-row{display:grid;gap:1.1rem}
+@media (min-width:640px){.fb-row{grid-template-columns:1fr 1fr}}
+.fb-f{display:block}
+.fb input[type=text],.fb textarea{width:100%;font:inherit;color:var(--ink);background:#fff;border:1.5px solid #8b95b8;border-radius:6px;padding:.65rem .8rem}
+.fb textarea{resize:vertical;min-height:7.5rem}
+.fb input[type=text]:focus,.fb textarea:focus{outline:3px solid var(--indigo);outline-offset:1px;border-color:var(--indigo)}
+.stars{display:inline-flex;flex-direction:row-reverse;justify-content:flex-end}
+.stars input{position:absolute;opacity:0;width:1px;height:1px}
+.stars label{font-size:2rem;line-height:1;padding:.1rem .15rem;color:#aab2cf;cursor:pointer}
+.stars input:checked~label,.stars label:hover,.stars label:hover~label{color:var(--gold)}
+.stars input:focus-visible+label{outline:3px solid var(--indigo);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.fb-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.fb-note{font-size:.95rem;color:var(--muted);margin:0}
+.fb .btn{justify-self:start}
+.fb .btn[disabled]{opacity:.6;cursor:wait}
+.fb-msg{margin:0;padding:.8rem 1rem;border-left:4px solid var(--indigo-deep);background:#fff;font-weight:700}
+.fb-err{border-left-color:var(--kumkum);color:var(--kumkum)}
